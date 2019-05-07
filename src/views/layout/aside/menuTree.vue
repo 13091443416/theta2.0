@@ -11,7 +11,7 @@
 
         <el-menu-item v-else :index="child.path">
           <i :class="child.iconCls?child.iconCls:[fa,fa-file]"></i>
-          <span slot="title">{{ $t(`routeNmae.${child.name}`) }}</span>
+          <span slot="title">{{ $t(`${child.name}`) }}</span>
         </el-menu-item>
       </template>
     </div>
@@ -20,7 +20,8 @@
 <script>
 export default {
   name: 'menuTree',
-  props: ['menuData']
+  props: ['menuData'],
+ 
 }
 </script>
 

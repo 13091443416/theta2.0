@@ -1,118 +1,184 @@
 <template>
-  <div>
-    <h3>筛选</h3>
-    <p>对表格进行筛选，可快速查找到自己想看的数据。</p>
-    <template>
-      <el-table
-        :data="tableData5"
-        style="width: 100%">
-        <el-table-column
-          prop="date"
-          label="日期"
-          sortable
-          width="180"
-          :filters="[{text: '2016-05-01', value: '2016-05-01'}, {text: '2016-05-02', value: '2016-05-02'}, {text: '2016-05-03', value: '2016-05-03'}, {text: '2016-05-04', value: '2016-05-04'}]"
-          :filter-method="filterHandler"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="address"
-          label="地址"
-          :formatter="formatter">
-        </el-table-column>
-        <el-table-column
-          prop="tag"
-          label="标签"
-          width="100"
-          :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
-          :filter-method="filterTag"
-          filter-placement="bottom-end">
-          <template slot-scope="scope">
-            <el-tag
-              :type="scope.row.tag === '家' ? 'primary' : 'success'"
-              disable-transitions>{{scope.row.tag}}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+  <!-- $t is vue-i18n global function to translate lang -->
+  <div class="app-container">
+    <div>
+      <FilenameOption :value="sadfsadf" v-on:clackhand="jieshou"/>
+    </div>
+
+    <!-- <el-table-column type='index' :index='indexMethod' ></el-table-column> -->
+    <el-table
+      v-loading="listLoading"
+      :data="list.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+      element-loading-text="拼命加载中"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column prop="ROWNUM" align="center" label="序号"></el-table-column>
+      <el-table-column prop="CODE" align="center" label="编号"></el-table-column>
+      <el-table-column prop="FULLNAME"  align="center" label="姓名"></el-table-column>
+      <el-table-column prop="SEX" align="center" label="性别"></el-table-column>
+      <el-table-column prop="AGE" label="年龄" width="300" align="center"></el-table-column>
+      <el-table-column prop="ROOMNAME" label="房间号" align="center"></el-table-column>
+      <el-table-column prop="grade" align="center" label="护理等级">
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.NURSINGLEVEL=='全自理' ">全自理</el-tag>
+          <el-tag type="info" v-if="scope.row.NURSINGLEVEL=='半自理' ">半失能</el-tag>
+          <el-tag type="danger" v-if="scope.row.NURSINGLEVEL=='全失能' ">全失能</el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="ADMISSIONDATE" align="center" label="入院时间"></el-table-column>
+      <el-table-column prop="STATE" align="center" label="在院状态">
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.STATE=='0' ">在院</el-tag>
+          <el-tag type="info" v-if="scope.row.STATE=='2' ">外出</el-tag>
+          <el-tag type="danger" v-if="scope.row.STATE=='1' ">离院</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="operation" align="center" label="操作" width="300">
+        <template slot-scope="scope">
+          <router-link :to="{ name: '编辑', params: { id: scope.row.ID}}">
+            <el-button type="primary" size="mini">编辑</el-button>
+          </router-link>
+
+          <router-link :to="{ name: '详情', params: { id: scope.row.ID}}">
+            <el-button type="success" size="mini">详情</el-button>
+          </router-link>
+          <router-link to="#">
+            <el-button type="danger" size="mini">离院</el-button>
+          </router-link>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="list.length"
+    ></el-pagination>
   </div>
 </template>
 
+
 <script>
+import FilenameOption from "./FilenameOption";
+import AutoWidthOption from "./AutoWidthOption";
+import BookTypeOption from "./BookTypeOption";
 export default {
-  name: 'filterTable',
-  data () {
+  name: "filterTable",
+  components: {
+    FilenameOption,
+    AutoWidthOption,
+    BookTypeOption
+  },
+  data() {
     return {
-      tableData5: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        tag: '家'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄',
-        tag: '公司'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄',
-        tag: '家'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄',
-        tag: '公司'
-      }]
+      a: 1,
+      list: [
+        {
+          ID: 1,
+          FULLNAME: "",
+          ROWNUM:'',
+          SEX: "",
+          AGE: "",
+          ROOMNAME: "",
+          NURSINGLEVEL: "",
+          ADMISSIONDATE: "",
+          STATE: "",
+          CODE:'',
+          bgc: ""
+        }
+      ],
+      pagesize: 10,
+      currentPage: 1,
+      sousuo: {
+        id: "",
+        name: "",
+        sex: "",
+        roomN: "",
+        state: ""
+      }
+    };
+  },
+  created() {
+    this.$ajax
+      .post("api/person/getPersonList", `sousou=${JSON.stringify(this.sousuo)}`)
+      .then(respones => {
+        this.list=respones.data
+        console.log(respones.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  },
+  mounted() {
+    this.handleSizeChange(currentPage);
+  },
+   watch:{
+     sousuo: {
+      handler(newName, oldName) {
+        console.log('请求')
+      this.$ajax
+      .post("api/person/getPersonList", `sousou=${JSON.stringify(newName)}`)
+      .then(respones => {
+        this.list=respones.data
+        console.log(respones.data);
+        console.log(11111111111);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+      console.log(sousou)
+      },
+      deep: true
     }
   },
   methods: {
-    handleEdit (index, row) {
-      console.log(index, row)
-      this.$message({
-        showClose: true,
-        message: index, row,
-        type: 'success'
-      })
+    jieshou(data) {
+      this.sousuo=data
+      console.log(this.sousuo)
     },
-    handleDelete (index, row) {
-      console.log(index, row)
-      this.$message({
-        showClose: true,
-        message: index, row,
-        type: 'success'
-      })
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
     },
-    filterHandler (value, row, column) {
-      const property = column['property']
-      return row[property] === value
-    },
-    formatter (row, column) {
-      return row.address
-    },
-    filterTag (value, row) {
-      return row.tag === value
+    handleSizeChange(size) {
+      this.pagesize = size;
     }
+    // handleEdit(index, row) {
+    //   console.log(index, row);
+    //   this.$message({
+    //     showClose: true,
+    //     message: index,
+    //     row,
+    //     type: "success"
+    //   });
+    // },
+    // handleDelete(index, row) {
+    //   console.log(index, row);
+    //   this.$message({
+    //     showClose: true,
+    //     message: index,
+    //     row,
+    //     type: "success"
+    //   });
+    // },
+    // filterHandler(value, row, column) {
+    //   const property = column["property"];
+    //   return row[property] === value;
+    // },
+    // formatter(row, column) {
+    //   return row.address;
+    // },
+    // filterTag(value, row) {
+    //   return row.tag === value;
+    // }
   }
-}
+};
 </script>
 
 <style scoped>
-
 </style>

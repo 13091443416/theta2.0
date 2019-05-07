@@ -1,18 +1,17 @@
 <template>
-  <div id="login">
-    <h3 class="loginTitle">vue-xuadmin权限管理后台模板</h3>
-    <div class="loginBox">
-      <el-form :model="loginForm" status-icon label-width="100px" class="demo-ruleForm">
-        <el-form-item>
-          <span class="ico"><i class="fa fa-user fa-lg"></i></span><el-input type="text" v-model="loginForm.username" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <span class="ico"><i class="fa fa-unlock-alt fa-lg"></i></span><el-input type="password" v-model="loginForm.password" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button class="subBtn" type="primary" @click="submitForm">登录</el-button>
-        </el-form-item>
-      </el-form>
+   <div id="login">
+    <div class="lconcent">
+      <div class="logo">
+        <div class="option">
+          <router-link to="/login/milogin">
+            <div @click="milogin" class="mlo">登录</div>
+          </router-link>
+          <router-link to="/login/register">
+            <div @click="register" class="reg">注册</div>
+          </router-link>
+        </div>
+        <router-view/>
+      </div>
     </div>
   </div>
 </template>
@@ -28,26 +27,7 @@ export default {
   },
   methods: {
     submitForm () {
-      let that = this
-      if (this.loginForm.username === '' || this.loginForm.password === '') {
-        this.$message({
-          showClose: true,
-          message: '账号或密码不能为空',
-          type: 'error'
-        })
-        return false
-      } else {
-        // 将 username 设置为 token 存储在 store，仅为测试效果，实际存储 token 以后台返回为准
-        that.$store.dispatch('setToken', that.loginForm.username).then(() => {
-          that.$router.push({path: '/'})
-        }).catch(res => {
-          that.$message({
-            showClose: true,
-            message: res,
-            type: 'error'
-          })
-        })
-      }
+      
     },
     message() {
       const h = this.$createElement;
@@ -57,48 +37,166 @@ export default {
         duration: 6000
       });
     },
+    milogin() {
+     
+      var milogin = document.querySelector(".mlo");
+      var register = document.querySelector(".reg");
+      milogin.style.borderBottom = "4px solid #0c77f8";
+      milogin.style.color = "#0c77f8";
+      register.style.borderBottom = "none";
+      register.style.color = "#aaaaaa";
+    },
+    register() {
+      var milogin = document.querySelector(".mlo");
+      var register = document.querySelector(".reg");
+      milogin.style.borderBottom = "none";
+      milogin.style.color = "#aaaaaa";
+      register.style.borderBottom = "4px solid #0c77f8";
+      register.style.color = "#0c77f8";
+    }
   },
   mounted() {
     this.message()
   }
 }
 </script>
-<style lang="scss">
-#login{
+<style>
+#login {
+  text-align: center;
   width: 100%;
   height: 100%;
-  background: #2d3a4b;
-  .loginTitle{
-    padding-top: 230px;
-    font-size: 30px;
-    color: #ffffff;
-    text-align: center;
-    margin-top: 0px;
-  }
-  .loginBox{
-    width: 300px;
-    height: 600px;
-    margin: 20px auto;
-    .el-form-item__content{
-      margin-left: 0px !important;
-      .subBtn{
-        width: 100%;
+  background-color: red;
+  position: relative;
+  background-image: url(../../assets/bglogin.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+.contact {
+  width: 75%;
+  height: 40px;
+  line-height: 40px;
+  margin: 25px auto;
+  color: #80b6f6;
+  border-top: 1px solid #cccccc;
+}
+.we {
+  height: 15%;
+  font-size: 35px;
+  text-align: left;
+  line-height: 100px;
+  width: 80%;
+  margin: 0 auto;
+}
+.option {
+  width: 446px;
+  height: 75px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 0px 0px rgba(0, 0, 0, 0.05);
+      border-radius: 5px 5px 0 0;
+}
+.option div {
+  box-sizing: border-box;
+  width: 50%;
+  height: 100%;
+  float: left;
+  line-height: 75px;
+  font-size: 24px;
+  font-weight: normal;
+  font-stretch: normal;
+  letter-spacing: 2px;
+  color: #aaaaaa;
+}
+.option .mlo {
+  border-bottom: 4px solid #0c77f8;
+  color: #0c77f8;
+}
+.lconcent {
+  width: 446px;
+  height: 519px;
+  background-color: #f4f4f4;
+  box-shadow: 0px 50px 50px 0px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+   border-radius: 5px;
+}
+.lconcent .logo {
+  width: 100%;
+  height: 100%;
+  background-color: #f4f4f4;
+   border-radius: 5px;
+ 
+}
+.logo .l1 {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+.logo .l2,
+.l3,
+.l5,
+.l6 {
+  width: 80%;
+  height: 7%;
 
-      }
-    }
-    input{
-      padding-left: 50px;
-    }
-    .el-form-item__content .ico{
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      z-index: 999;
-      width: 40px;
-      height: 39px;
-      text-align: center;
-      border-right: 1px solid #ccc;
-    }
-  }
+  margin: 0 auto;
+}
+.l6 {
+  font-size: 30px;
+  height: 10%;
+  color: #fff;
+  margin-top: 35px;
+}
+.l6 div:first-of-type {
+  float: left;
+}
+.l6 div:last-of-type {
+  float: right;
+}
+.l6 div:last-of-type button {
+  width: 180px;
+  height: 50px;
+  background-color: #0c77f8;
+  font-size: 16px;
+  border: none;
+  color: #ffffff;
+  margin-right: 20px;
+  border-radius: 5px;
+}
+.l5 div {
+  width: 49%;
+  height: 100%;
+  background-color: blue;
+  margin-right: 2%;
+  float: left;
+}
+.code {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-bottom: 1px solid #c6c5c5;
+  background-color: #f4f4f4;
+}
+.l5 div:last-of-type {
+  margin-left: 40px;
+  width: 35%;
+  border-radius: 5px;
+  background-color: #bfbfbf;
+}
+.username,
+.password,
+.invitation {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-bottom: 1px solid #c6c5c5;
+  background-color: #f4f4f4;
+}
+#identity {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #c6c5c5;
 }
 </style>

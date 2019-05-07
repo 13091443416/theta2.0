@@ -1,9 +1,10 @@
 <template>
   <div>
+    <div class="meng"></div>
     <el-row :gutter="20">
       <el-col :span="8">
         <div class="card kjfs">
-          <p class="title"><i class="fa fa-th-large fa-lg"></i>快捷方式</p>
+          <p class="title"><i class="fa fa-th-large"></i>快捷方式</p>
           <ul>
             <li><router-link to="/addArticle" class="kjfs kjfs-bluee"><span><i class="el-icon-tickets fa-2x"></i></span><span>发表文章</span></router-link></li>
             <li><router-link to="/dragTabe" class="kjfs kjfs-pinkk"><span><i class="fa fa-hand-stop-o fa-2x"></i></span><span>拖拽排序</span></router-link></li>
@@ -18,20 +19,31 @@
       </el-col>
       <el-col :span="8">
         <div class="card dbsx">
-          <p class="title"><i class="fa fa-file-text-o"></i>待办事项</p>
+          <p class="title"><i class="fa fa-thumb-tack"></i >待办事项</p>
           <ul>
-            <li><router-link to="#"><span>待审评论</span><span class="num">66</span></router-link></li>
-            <li><router-link to="#"><span>待审帖子</span><span class="num">66</span></router-link></li>
+        
+            <li @click="meng"><router-link to="/index/Urgent"><span>紧急事件</span><span class="num" style="color:#f4464a">66</span></router-link></li>
+            <li><router-link to="#"><span>特殊关注</span><span class="num">66</span></router-link></li>
+            <div class="messal" >
+<router-view />
+
+    </div>
           </ul>
           <ul>
-            <li><router-link to="#"><span>待审商品</span><span class="num">66</span></router-link></li>
-            <li><router-link to="#"><span>代发货</span><span class="num">66</span></router-link></li>
+            <li><router-link to="#"><span>代办工单</span><span class="num">66</span></router-link></li>
+            <li><router-link to="#"><span>未读消息</span><span class="num">66</span></router-link></li>
           </ul>
         </div>
       </el-col>
       <el-col :span="8">
+        <router-link to="/Monitor">
         <div class="card bbxx">
-          <p class="title"><i class="fa fa-server"></i>版本信息</p>
+          <p class="title"><i class="fa fa-tv"></i>院内大数据监控中心</p>
+          <img src="../../assets/minic.png" alt="" style=" margin-right:35px;margin-left:25px">
+          <span style="height: 256px;display: inline-block ">
+          <img src="../../assets/mini.png" alt="">
+          </span>
+          <!-- <p class="title"><i class="fa fa-server"></i>版本信息</p>
           <div class="table">
             <p><span class="tit">当前版本</span>v1.0.0</p>
             <p><span class="tit">基于框架</span>vue2.0全家桶 + element-ui</p>
@@ -42,33 +54,51 @@
                   <a target="_blank" href="https://gitee.com/nirongxu/xu-webplatform.git"><el-button type="primary" icon="el-icon-download" size="small">码云</el-button></a>
                 </span>
             </p>
-          </div>
+          </div> -->
         </div>
+        </router-link>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="24">
-        <line-echarts id="lineEcharts" height="300px" ref="echarts"></line-echarts>
+        <line-echarts id="lineEcharts" width="1383px" height="415px" ref="echarts"></line-echarts>
       </el-col>
     </el-row>
-    <el-row>
+    <!-- <el-row>
       <el-col :span="24">
         <maintable id="maintable"></maintable>
       </el-col>
-    </el-row>
+    </el-row> -->
   </div>
 </template>
 
 <script>
 import LineEcharts from '../../components/ECharts/lineEcharts'
 import Maintable from '../table/maintable'
+import Special from '../Monitor/Special'
 export default {
+
   name: 'mainIndex',
-  components: {Maintable, LineEcharts},
+  components: {Maintable, LineEcharts,Special},
   mounted () {
+    var iframe = document.getElementById("urlIframe");
+    var bHeight = iframe.contentWindow.document.body.scrollHeight; 
+    var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+    var height = Math.max(bHeight, dHeight); 
+    iframe.height = height; 
+iframe.height = bHeight; 
+    console.log(1231231321)
+    console.log(this.$route.params.reportUrl)
+    
     this.selfAdaption()
   },
   methods: {
+    // element弹窗
+    meng() {
+        var meng=document.querySelector(".meng")
+        console.log(meng)
+        meng.style.display="block"
+      },
     // echart自适应
     selfAdaption () {
       let that = this
@@ -76,6 +106,7 @@ export default {
         window.onresize = function () {
           if (that.$refs.echarts) {
             that.$refs.echarts.chart.resize()
+            
           }
         }
       }, 10)
@@ -100,6 +131,7 @@ export default {
   $list: bluee pinkk yelloww grennn purplee lightBluee;
   $list1: $bluee $pinkk $yelloww $grennn $purplee $lightBluee;
   %shadow{
+    
     background: #fff;
     -webkit-box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.2);
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.2);
@@ -224,14 +256,35 @@ export default {
       }
     }
   }
-  #lineEcharts{
+  #lineEchart{
     margin-#{$top}: 30px;
     padding-#{$top}: 30px;
     @extend %shadow;
   }
+  
   #maintable{
     margin-#{$top}: 30px;
     padding-#{$top}: 10px;
     @extend %shadow;
+  }
+  .messal{
+    z-index: 9999;
+    // display: none;
+    position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+   border-radius: 5px;
+  }
+  .meng{
+    width:100%;
+    height: 100000px;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background-color: #999;
+    opacity: 0.7;
   }
 </style>
